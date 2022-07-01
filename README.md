@@ -1,4 +1,6 @@
-# Bank api Project Build with nodejs, typescript and postgres using layered architecture
+# Bank api Project 
+## Build with nodejs, typescript and postgres 
+### using layered architecture
 
 Steps to run this project:
 
