@@ -8,7 +8,7 @@ class TransactionsTable extends PostgresDB
         try
         {
             this.client.connect()
-
+            
             const insertTransactionQuery = `
                 INSERT INTO transactions (
                     id,
@@ -31,7 +31,7 @@ class TransactionsTable extends PostgresDB
 
             const result = await this.client.query(insertTransactionQuery, [
                 transaction.id,
-                transaction.senderAccount,
+                transaction.userAccount,
                 transaction.receiverAccount,
                 transaction.amount,
                 transaction.fee,
@@ -47,6 +47,35 @@ class TransactionsTable extends PostgresDB
             }
 
             return false
+        }
+        catch (error)
+        {
+            this.client.end()
+            throw new Error('503: service temporarily unavailable')
+        }
+    }
+    public async findByAccountNumber (accountNumber:string): Promise<Transaction[]>  {
+        try
+        {
+            this.client.connect()
+
+            const searchTransactionQuery = `
+                SELECT 
+                    *
+                FROM
+                    transactions
+                WHERE
+                    account_number = $1
+            `
+            
+            const result = await this.client.query(searchTransactionQuery, [
+                accountNumber
+            ])
+
+            this.client.end()
+
+            return result.rows as Transaction[]
+
         }
         catch (error)
         {

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { CreateTransactionService } from '../services'
+import { CreateDepositService } from '../services'
 import { ResponseWriter } from '../utils'
 
-class CreateTransactionController
+class CreateDepositController
 {
-    private service = CreateTransactionService
+    private service = CreateDepositService
     private responseWriter = ResponseWriter
 
     public async handle (req: Request, res: Response)
@@ -21,4 +21,4 @@ class CreateTransactionController
     }
 }
 
-export { CreateTransactionController }
+export { CreateDepositController }

@@ -12,7 +12,7 @@ class AgencyValidator
     {
         if (!agency)
         {
-            this.errors += 'agency:agency required|AccountNumberValidator'
+            this.errors += 'agency:agency required|'
 
             return ''
         }

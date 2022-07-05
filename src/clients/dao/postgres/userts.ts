@@ -48,7 +48,7 @@ class UsersTable extends PostgresDB
             throw new Error('503: service temporarily unavailable')
         }
     }
-    public async search (cpf: string) : Promise<User | undefined> {
+    public async findByCpf (cpf: string) : Promise<User | undefined> {
         try
         {
             this.client.connect()

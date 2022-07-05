@@ -1,33 +1,34 @@
 import { Request, Response } from 'express'
 
-import { CreateAccountService, CreateUserService, FindUserByCpfService } from '../services'
+import { CreateAccountService, CreateUserService } from '../services'
 import { ResponseWriter } from '../utils'
 
 class CreateAccountController
 {
     private createAcountservice = CreateAccountService
     private responseWriter = ResponseWriter
-    private findUserByCpfService = FindUserByCpfService
     private createUserService = CreateUserService
 
     public async handle (req: Request, res: Response)
     {
         try
         {
-            const userExists = await new this.findUserByCpfService().execute(req.body.user.cpf)
-            const accountResponse = await new this.createAcountservice().execute(req.body.account)
+            const userResponse = await new this.createUserService().execute(req.body.user)
+           
+            const accountResponse = await new this.createAcountservice()
+                .execute(req.body.account, req.body.user.cpf)
 
-            if(!userExists){
-                const userResponse = await new this.createUserService().execute(req.body.user)
-                const finalResponse = {
-                    data: {account: accountResponse.data, user: userResponse.data},
-                    messages: userResponse.messages.concat(accountResponse.messages)
-                }
-                
-                this.responseWriter.success(res, 201, finalResponse)
+
+            const response = {
+                data: {
+                    account: {...accountResponse.data},
+                    user: {...userResponse.data}    
+                },
+                messages: accountResponse.messages.concat(userResponse.messages)
             }
-            else
-                this.responseWriter.success(res, 201, accountResponse)
+
+            this.responseWriter.success(res, 201, response)
+
         }
         catch (err)
         {

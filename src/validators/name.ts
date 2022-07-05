@@ -1,39 +1,39 @@
 class NameValidator
 {
-    public errors: string;
-    public name: string;
+    public errors: string
+    public name: string
 
     public constructor (name: string)
     {
-        this.errors = "";
-        this.name = this.validate(name);
+        this.errors = ''
+        this.name = this.validate(name)
     }
 
     private validate (name: string): string
     {
         if (!name)
         {
-            this.errors += "name:field required|";
+            this.errors += 'name:field required|'
 
-            return "";
+            return ''
         }
 
         if (name.length < 3)
         {
-            this.errors += "name:name too short|";
+            this.errors += 'name:name too short|'
 
-            return "";
+            return ''
         }
 
         if (!name.trim())
         {
-            this.errors += "name:cannot be only space characters|";
+            this.errors += 'name:cannot be only space characters|'
 
-            return "";
+            return ''
         }
 
-        return name.trim();
+        return name.trim()
     }
 }
 
-export { NameValidator };
+export { NameValidator }

@@ -1,11 +1,11 @@
 interface Transaction {
     id:string
-    senderAccount:string
+    userAccount:string
     receiverAccount?:string
     amount:number
     fee:number
-    total:number
     cod:string
+    total:number
 }
 
 export { Transaction }

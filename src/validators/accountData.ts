@@ -3,7 +3,8 @@ import {
     AgencyValidator,
     CheckerDigitAgencyValidator,
     CheckerDigitAccountValidator,
-    AccountNumberValidator
+    AccountNumberValidator,
+    PasswordValidator
 } from '.'
 import { Account } from '../models'
 
@@ -17,7 +18,7 @@ class AccountDataValidator
     private checkerDigitAgencyValidator = CheckerDigitAgencyValidator
     private checkerDigitAccountValidator = CheckerDigitAccountValidator
     private accountNumberValidator = AccountNumberValidator
-
+    private passwordValidator = PasswordValidator
     public constructor (account: Account)
     {
         this.errors = ''
@@ -31,6 +32,7 @@ class AccountDataValidator
         const validcheckerDigitAgency = new this.checkerDigitAgencyValidator(account.checkerDigitAgency)
         const validcheckerDigitAccount = new this.checkerDigitAccountValidator(account.checkerDigitAccount)
         const validAccountNumber = new this.accountNumberValidator(account.accountNumber)
+        const validPassword = new this.passwordValidator(account.password)
 
         this.errors = this.errors.concat(`
             ${validBalance.errors}
@@ -38,6 +40,7 @@ class AccountDataValidator
             ${validcheckerDigitAgency.errors}
             ${validcheckerDigitAccount.errors}
             ${validAccountNumber.errors}
+            ${validPassword.errors}
             `)
 
         const accountData: Partial<Account> = {
@@ -46,6 +49,7 @@ class AccountDataValidator
             balance: validBalance.balance,
             checkerDigitAccount: validcheckerDigitAccount.checkerDigitAccount,
             checkerDigitAgency: validcheckerDigitAgency.checkerDigitAgency,
+            password: validPassword.password
         }
         return accountData
     }

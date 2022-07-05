@@ -20,7 +20,7 @@ class CodValidator
             this.errors += 'cod: cod invalid|'
             return ''
         }
-        return cod
+        return cod.trim()
     }
 }
 

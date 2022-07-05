@@ -8,7 +8,6 @@ class AccountsTable extends PostgresDB
         try
         {
             this.client.connect()
-            console.log('aaaaaaaaa')
             const insertAccountQuery = `
                 INSERT INTO accounts (
                     id,
@@ -28,7 +27,6 @@ class AccountsTable extends PostgresDB
                     $7
                 ) RETURNING id
             `
-
             const result = await this.client.query(insertAccountQuery, [
                 account.id,
                 account.agency,
@@ -38,7 +36,6 @@ class AccountsTable extends PostgresDB
                 account.balance,
                 account.userId
             ])
-
             this.client.end()
 
             if (result.rows.length !== 0)
@@ -51,7 +48,67 @@ class AccountsTable extends PostgresDB
         catch (error)
         {
             this.client.end()
-            throw new Error('503: service temporarily unavailable')
+            throw new Error('503: service temporarily unavailable ')
+        }
+    }
+    public async findByAccountNumber (accountNumber: string) {
+        try {
+
+            this.client.connect()
+
+            const searchQuery = `
+                SELECT 
+                    *
+                FROM
+                    accounts
+                WHERE
+                    account_number = $1
+            `
+            const result =  await this.client.query(searchQuery, [accountNumber])
+            this.client.end()
+
+            if (result.rows.length !== 0)
+            {
+                return true
+            }
+
+            return false
+        }
+        catch (error)
+        {
+            this.client.end()
+            throw new Error('503: service temporarily unavailable ')
+        }
+    }
+    public async updateAmount (accountNumber: string, amount:number) {
+        try {
+
+            this.client.connect()
+
+            const updateAmount = `
+                UPDATE 
+                    accounts
+                SET 
+                    balance = balance + $2
+                WHERE
+                    account_number = $1
+            `
+            const result =  await this.client.query(updateAmount, 
+                [accountNumber, amount]
+            )
+            this.client.end()
+            if (result.rows.length !== 0)
+            {
+                return true
+            }
+
+            return false
+        }
+        catch (error)
+        {
+            console.log(error)
+            this.client.end()
+            throw new Error('503: service temporarily unavailable ')
         }
     }
 }

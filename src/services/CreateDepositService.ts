@@ -3,43 +3,35 @@ import { ExceptionTreatment } from '../utils'
 import { TransactionDataValidator } from '../validators'
 import { TransactionsTable } from '../clients/dao/postgres/transactions'
 import { v4 } from 'uuid'
+import { bankFees } from '../config'
+import { AccountsTable } from '../clients/dao/postgres/accounts'
 
-class CreateTransactionService {
+class CreateDepositService {
     private transactionDataValidator = TransactionDataValidator
     private transactionsTable = TransactionsTable
-    private WITHDRAWCOD = '2'
-    private TRANSFERCOD = '3'
-    private TAX = 0.01
+    private accountsTable = AccountsTable
+
     async execute (transaction: Transaction) : Promise<APIResponse> {
         try
         {
             const validTransactionData = new this.transactionDataValidator(transaction)
-
-            // if (validTransactionData.errors)
-            // {
-            //     throw new Error(`400: ${validTransactionData.errors}`)
-            // }
-
-            if(validTransactionData.transaction.cod === this.WITHDRAWCOD)
-                validTransactionData.transaction.fee = 4
-
-            else if(validTransactionData.transaction.cod === this.TRANSFERCOD) {
-                validTransactionData.transaction.fee = 
-                validTransactionData.transaction.amount * this.TAX
-            }
-            if(validTransactionData.transaction.cod !== '0')
-                validTransactionData.transaction.total = 
-                - (validTransactionData.transaction.amount 
-                + validTransactionData.transaction.fee)
-            else
-                validTransactionData.transaction.total = 
-                (validTransactionData.transaction.amount 
-                + validTransactionData.transaction.fee)
-
             validTransactionData.transaction.id = v4()
 
-            const insertedTransaction = await new this.transactionsTable().insert(validTransactionData.transaction as Transaction)
+            validTransactionData.transaction.fee = 
+                bankFees.depositTax * validTransactionData.transaction.amount
+                
+            if (validTransactionData.errors)
+            {
+                throw new Error(`400: ${validTransactionData.errors}`)
+            }
 
+            const insertedTransaction = await new this.transactionsTable().insert(validTransactionData.transaction as Transaction)
+            
+            await  new this.accountsTable().updateAmount(
+                validTransactionData.transaction.receiverAccount,
+                validTransactionData.transaction.amount
+            )
+            
             if (insertedTransaction)
             {
                 return {
@@ -64,4 +56,4 @@ class CreateTransactionService {
     }
 }
 
-export { CreateTransactionService }
+export { CreateDepositService }

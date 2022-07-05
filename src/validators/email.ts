@@ -1,14 +1,14 @@
 class EmailValidator
 {
-    public email: string;
-    public errors: string;
+    public email: string
+    public errors: string
     // eslint-disable-next-line prefer-named-capture-group
-    private regex = /^(\S+)@((?:(?:(?!-)[a-zA-Z0-9-]{1,62}[a-zA-Z0-9])\.)+[a-zA-Z0-9]{2,12})$/;
+    private regex = /^(\S+)@((?:(?:(?!-)[a-zA-Z0-9-]{1,62}[a-zA-Z0-9])\.)+[a-zA-Z0-9]{2,12})$/
 
     public constructor (email: string)
     {
-        this.errors = "";
-        this.email = this.validate(email);
+        this.errors = ''
+        this.email = this.validate(email)
     }
 
     private validate (email: string): string
@@ -16,20 +16,20 @@ class EmailValidator
 
         if (email.length === 0)
         {
-            this.errors += "email:email required|";
+            this.errors += 'email:email required|'
 
-            return "";
+            return ''
         }
 
         if (!this.regex.test(email))
         {
-            this.errors += "email:invalid email|";
+            this.errors += 'email:invalid email|'
 
-            return "";
+            return ''
         }
 
-        return email.trim();
+        return email.trim()
     }
 }
 
-export { EmailValidator };
+export { EmailValidator }

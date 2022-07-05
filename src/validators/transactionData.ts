@@ -27,24 +27,21 @@ class TransactionDataValidator
     {
         const validAmount = new this.amountValidator(transaction.amount)
         const validReceiverAccount = new this.receiverAccountValidator(transaction.receiverAccount)
-        const validFee = new this.feeValidator(transaction.fee)
         const validCod = new this.codValidator(transaction.cod)
-        const validSenderAccount = new this.senderAccountValidator(transaction.senderAccount)
+        const validSenderAccount = new this.senderAccountValidator(transaction.userAccount)
 
         this.errors = this.errors.concat(`
             ${validAmount.errors}
             ${validReceiverAccount.errors}
-            ${validFee.errors}
             ${validCod.errors}
             ${validSenderAccount.errors}
             `)
 
         const accountData: Partial<Transaction> = {
-            senderAccount: validSenderAccount.accountNumber,
+            userAccount: validSenderAccount.accountNumber,
             receiverAccount: validReceiverAccount.accountNumber,
             amount: validAmount.amount,
             cod: validCod.cod,
-            fee: validFee.fee
         }
         return accountData
     }

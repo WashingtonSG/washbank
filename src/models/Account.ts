@@ -6,6 +6,7 @@ interface Account {
     checkerDigitAccount:string
     accountNumber:string
     balance:number
+    password:string
 }
 
 export { Account }

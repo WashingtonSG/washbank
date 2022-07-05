@@ -1,13 +1,20 @@
-import { FindTransactionsByAccountNumber } from '../clients/dao/postgres/findTransactions'
+import { TransactionsTable } from '../clients/dao/postgres/transactions'
 import { ExceptionTreatment } from '../utils'
-import { Transaction } from '../models'
+import { APIResponse } from '../models'
 
 class ListTransactionsService {
 
-    async execute (accountNumber: string):Promise<Transaction[]> {
+    async execute (accountNumber: string):Promise<APIResponse> {
         try {
-            const transactions = await new FindTransactionsByAccountNumber().search(accountNumber)
-            return transactions
+            const transactions = await new TransactionsTable().findByAccountNumber(accountNumber)
+
+            if(transactions)
+            {
+                return {
+                    data: transactions,
+                    messages: []
+                } as APIResponse
+            }
         } catch (error) {
             throw new ExceptionTreatment(
                 error as Error,

@@ -11,14 +11,24 @@ class CreateUserService {
     async execute (user: User) : Promise<APIResponse> {
         try
         {
+            const userExists = await new this.usersTable().findByCpf(user.cpf)
+
             const validUserData = new this.userDataValidator(user)
+
+            validUserData.user.id = v4()
+
+            if (userExists){
+                return {
+                    data: {warning:'user already exists'},
+                    messages: []
+                } as APIResponse
+            }
 
             if (validUserData.errors)
             {
                 throw new Error(`400: ${validUserData.errors}`)
             }
-
-            validUserData.user.id = v4()
+            
 
             const insertedUser = await new this.usersTable().insert(validUserData.user as User)
 
